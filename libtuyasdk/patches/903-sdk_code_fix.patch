@@ -1,0 +1,71 @@
+Index: libtuyasdk-1.0.0/interface/mqtt_client_interface.h
+===================================================================
+--- libtuyasdk-1.0.0.orig/interface/mqtt_client_interface.h
++++ libtuyasdk-1.0.0/interface/mqtt_client_interface.h
+@@ -80,6 +80,6 @@ uint16_t mqtt_client_subscribe(void* cli
+ 
+ uint16_t mqtt_client_unsubscribe(void* client, const char* topic, uint8_t qos);
+ 
+-uint16_t mqtt_client_publish(void* client, const char* topic, const uint8_t* payload, size_t length, uint8_t qos);
++int16_t mqtt_client_publish(void* client, const char* topic, const uint8_t* payload, size_t length, uint8_t qos);
+ 
+ #endif /* ifndef MQTT_CLIENT_INTERFACE_H */
+Index: libtuyasdk-1.0.0/middleware/mqtt_client_wrapper.c
+===================================================================
+--- libtuyasdk-1.0.0.orig/middleware/mqtt_client_wrapper.c
++++ libtuyasdk-1.0.0/middleware/mqtt_client_wrapper.c
+@@ -298,7 +298,7 @@ uint16_t mqtt_client_unsubscribe(void* c
+     return msgid;
+ }
+ 
+-uint16_t mqtt_client_publish(void* client, const char* topic, const uint8_t* payload, size_t length, uint8_t qos)
++int16_t mqtt_client_publish(void* client, const char* topic, const uint8_t* payload, size_t length, uint8_t qos)
+ {
+     mqtt_client_context_t* context = (mqtt_client_context_t*)client;
+     MQTTStatus_t mqtt_status;
+@@ -316,9 +316,9 @@ uint16_t mqtt_client_publish(void* clien
+                                 msgid);
+     // tuya_hal_mutex_unlock(context->mqclient.mutex);
+     if (MQTTSuccess != mqtt_status) {
+-        return 0;
++        return OPRT_LINK_CORE_MQTT_PUBLISH_ERROR;
+     }
+-    return msgid;
++    return 0;
+ }
+ 
+ mqtt_client_status_t mqtt_client_yield(void* client)
+@@ -333,4 +333,4 @@ mqtt_client_status_t mqtt_client_yield(v
+         return MQTT_STATUS_NETWORK_TIMEOUT;
+     }
+     return MQTT_STATUS_SUCCESS;
+-}
+\ No newline at end of file
++}
+Index: libtuyasdk-1.0.0/src/tuyalink_core.c
+===================================================================
+--- libtuyasdk-1.0.0.orig/src/tuyalink_core.c
++++ libtuyasdk-1.0.0/src/tuyalink_core.c
+@@ -705,12 +705,12 @@ int tuyalink_message_send(tuya_mqtt_cont
+ 
+ 	TY_LOGD("publish topic:%s", topic_stuff);
+ 	TY_LOGD("payload size:%d, %s\r\n", payload_length, payload);
+-	uint16_t mqmsgid = mqtt_client_publish(context->mqtt_client, topic_stuff, payload, payload_length, MQTT_QOS_0);
++	int16_t status = mqtt_client_publish(context->mqtt_client, topic_stuff, payload, payload_length, MQTT_QOS_0);
+ 	system_free(payload);
+-	if (mqmsgid <= 0) {
++	if (status != 0) {
+ 		return OPRT_LINK_CORE_MQTT_PUBLISH_ERROR;
+ 	}
+-	return (int)msgid_int;
++	return OPRT_OK;
+ }
+ 
+ int tuyalink_thing_data_model_get(tuya_mqtt_context_t* context, const char* device_id)
+@@ -1068,4 +1068,4 @@ int tuyalink_tag_delete(tuya_mqtt_contex
+ 		.ack = false
+ 	};
+ 	return tuyalink_message_send(context, &message);
+-}
+\ No newline at end of file
++}

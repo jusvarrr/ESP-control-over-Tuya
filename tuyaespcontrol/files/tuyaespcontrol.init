@@ -1,0 +1,47 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=99
+
+start_service() {
+    local enabled
+    local device_id
+    local secret
+    local product_id
+    local daemonize
+
+    config_load 'tuyaespcontrol'
+
+    config_get enabled esptuyadm 'enable' '0'
+    config_get device_id esptuyadm 'device_id'
+    config_get secret esptuyadm 'secret'
+    config_get product_id esptuyadm 'product_id'
+    config_get daemonize esptuyadm 'daemonize' '0'
+
+    local command_args=" -d $device_id -s $secret -p $product_id"
+
+    if [ "$enabled" -eq 1 ]; then
+
+        procd_open_instance
+
+        procd_set_param command /usr/bin/tuyaespcontrol
+        
+        if [ "$daemonize" -eq 1 ]; then
+            procd_append_param $command_args -D
+        fi
+        procd_append_param command $command_args
+        procd_set_param pidfile /var/run/tuyaespcontrol.pid
+        procd_set_param file /etc/config/tuyaespcontrol
+
+        procd_close_instance
+    fi
+}
+
+service_triggers() {
+    procd_add_reload_trigger "tuyaespcontrol"
+}
+
+reload_service() {
+    stop
+    start
+}
