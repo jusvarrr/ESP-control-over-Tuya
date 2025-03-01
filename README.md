@@ -1,15 +1,15 @@
 # ESP Control over Tuya IoT Cloud
-This project involves controlling a microcontroller using Tuya Cloud by interacting with a proccess wthat communicates to ESP device via serial port. The "Ubus" system is used to allow inter-process comunication between process interacting with ESP and process communicating with Tuya Cloud, allowing the switching on and off of contacts, retrieving sensor data (e.g., from a "DHT" sensor), and listing connected devices.
+This project involves creating a process on an OpenWRT-based router to control a microcontroller via Tuya Cloud. The process interacts with another process (missing here for now) that controls an ESP device through a serial port. The "Ubus" system facilitates inter-process communication. This allows for switching the microcontroller's contacts on and off, retrieving sensor data (e.g., from a "DHT" sensor), and listing connected devices.
 
 !WARNING: the project is missing one more package responsible for creating a process for comminication with Tuya
 
 ## Functional Requirements
 
 - **Actions:**
-  - Switch on/off the microcontroller's contacts.
-  - Retrieve information about the controller's contacts.
-  - Get a list of connected devices (the list includes the device name, vendor, and product ID).
-  - Returning responses in JSON format regarding the success or failure of the commands.
+  - Use Tuya to switch on/off the microcontroller's contacts.
+  - Use Tuya to retrieve information about the controller's contacts.
+  - Use Tuya to get a list of connected devices (the list includes the device name, vendor, and product ID).
+  - Returning responses to Tuya in JSON format regarding the success or failure of the commands.
 
 - **Automatic Start:**
   - The service starts automatically when the router is powered on.
@@ -43,6 +43,9 @@ A package responsible for building installation file implementing libary to be u
 
 ### tuyaespcontrol
 The main package of this project responsible for building the installation files required to establish communication between Tuya and the router. It makes the program use Tuya Cloud to control ESP devices via the Ubus system on the router.
+
+### espcontrol (missing)
+Package that builds service for the router allowing communication with ESP8266 over serial port (USB cable). It works as a UBUS server and takes request from other processes requesting actions to be performed on ESP8266.
 
 ## Building & Installation (OpenWRT SDK)  
 
