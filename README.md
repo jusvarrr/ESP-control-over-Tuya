@@ -1,7 +1,5 @@
 # ESP Control over Tuya IoT Cloud
-This project involves creating a process on an OpenWRT-based router to control a microcontroller via Tuya Cloud. The process interacts with another process (missing here for now) that controls an ESP device through a serial port. The "Ubus" system facilitates inter-process communication. This allows for switching the microcontroller's contacts on and off, retrieving sensor data (e.g., from a "DHT" sensor), and listing connected devices.
-
-!WARNING: the project is missing one more package responsible for creating a process for comminication with Tuya
+This project involves creating a process on an OpenWRT-based router to control a microcontroller via Tuya Cloud. The process interacts with another process that controls an ESP device through a serial port. The "Ubus" system facilitates inter-process communication. This allows for switching the microcontroller's contacts on and off, retrieving sensor data (e.g., from a "DHT" sensor), and listing connected devices.
 
 ## Functional Requirements
 
@@ -65,6 +63,7 @@ git clone https://github.com/jusvarrr/ESP-control-over-Tuya.git
   make  package/argp_standalone/compile
   make  package/libtuyasdk/compile
   make  package/libserialport/compile
+  make  package/espcontrol/compile
   make  package/tuyaespcontrol/compile
 ```
 
