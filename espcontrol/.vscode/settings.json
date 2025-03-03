@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "esp_control.h": "c",
+        "string.h": "c"
+    }
+}
