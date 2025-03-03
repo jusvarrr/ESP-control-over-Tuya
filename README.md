@@ -42,7 +42,7 @@ A package responsible for building installation file implementing libary to be u
 ### tuyaespcontrol
 The main package of this project responsible for building the installation files required to establish communication between Tuya and the router. It makes the program use Tuya Cloud to control ESP devices via the Ubus system on the router.
 
-### espcontrol (missing)
+### espcontrol
 Package that builds service for the router allowing communication with ESP8266 over serial port (USB cable). It works as a UBUS server and takes request from other processes requesting actions to be performed on ESP8266.
 
 ## Building & Installation (OpenWRT SDK)  
@@ -57,7 +57,7 @@ cd openwrt/package
 git clone https://github.com/jusvarrr/ESP-control-over-Tuya.git
 ```
 
-### 3. Compile packages argp_standalone, libtuyasdk, libserialport and tuyaespcontrol in OpenWRT host machine environment with:
+### 3. Compile packages argp_standalone, libtuyasdk, libserialport, espcontrol and tuyaespcontrol in OpenWRT host machine environment with:
    
 ```bash
   make  package/argp_standalone/compile
